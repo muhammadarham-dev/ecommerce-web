@@ -1,0 +1,816 @@
+/* =========================================================
+   Admin Shipping Rates Management
+========================================================= */
+
+.admin-shipping-page,
+.admin-shipping-form-page {
+  display: grid;
+  gap: 26px;
+}
+
+.admin-shipping-page__heading,
+.admin-shipping-form-page__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.admin-shipping-page__heading h1,
+.admin-shipping-form-page__heading h1 {
+  margin: 5px 0 9px;
+  color: #11130f;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.admin-shipping-page__heading p,
+.admin-shipping-form-page__heading p {
+  max-width: 760px;
+  margin: 0;
+  color: #687066;
+  line-height: 1.7;
+}
+
+.admin-shipping-eyebrow {
+  color: #6c7a38;
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.admin-shipping-heading-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-shipping-heading-actions a {
+  text-decoration: none;
+}
+
+.admin-shipping-stats {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-shipping-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #e4e8df;
+  border-radius: 20px;
+  padding: 18px;
+  background: #ffffff;
+  box-shadow:
+    0 14px 40px rgba(17, 19, 15, 0.05);
+}
+
+.admin-shipping-stat-card > span {
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: #f1f7dc;
+  color: #718d1c;
+  font-size: 1.2rem;
+}
+
+.admin-shipping-stat-card > div {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-shipping-stat-card small {
+  color: #778173;
+  font-size: 0.67rem;
+  font-weight: 790;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-shipping-stat-card strong {
+  color: #11130f;
+  font-size: 1.25rem;
+  letter-spacing: -0.035em;
+}
+
+.admin-shipping-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  border-bottom: 1px solid #e4e8df;
+  padding-bottom: 10px;
+}
+
+.admin-shipping-tab {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #e1e6dc;
+  border-radius: 12px;
+  padding: 0 16px;
+  background: #ffffff;
+  color: #687066;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 780;
+  white-space: nowrap;
+}
+
+.admin-shipping-tab--active {
+  border-color: #c6ff3d;
+  background: #c6ff3d;
+  color: #11130f;
+}
+
+.admin-shipping-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(280px, 1.6fr)
+    repeat(4, minmax(145px, 0.8fr));
+  gap: 12px;
+  border: 1px solid #e4e8df;
+  border-radius: 22px;
+  padding: 18px;
+  background: #ffffff;
+  box-shadow:
+    0 14px 40px rgba(17, 19, 15, 0.05);
+}
+
+.admin-shipping-search {
+  position: relative;
+}
+
+.admin-shipping-search > svg {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  z-index: 1;
+  color: #84907f;
+  transform: translateY(-50%);
+}
+
+.admin-shipping-search input {
+  padding-left: 43px;
+}
+
+.admin-shipping-filters input,
+.admin-shipping-filters select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #dde3d8;
+  border-radius: 13px;
+  padding: 0 13px;
+  background: #f9fbf7;
+  color: #11130f;
+  outline: none;
+  font: inherit;
+}
+
+.admin-shipping-filters input:focus,
+.admin-shipping-filters select:focus {
+  border-color: #9dbb2f;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(157, 187, 47, 0.12);
+}
+
+.admin-shipping-filter-actions {
+  display: flex;
+  gap: 10px;
+  grid-column: span 2;
+}
+
+.admin-shipping-table-shell {
+  overflow-x: auto;
+  border: 1px solid #e4e8df;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow:
+    0 16px 44px rgba(17, 19, 15, 0.06);
+}
+
+.admin-shipping-table {
+  width: 100%;
+  min-width: 1160px;
+  border-collapse: collapse;
+}
+
+.admin-shipping-table th,
+.admin-shipping-table td {
+  border-bottom: 1px solid #edf0e9;
+  padding: 15px 16px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-shipping-table th {
+  background: #f7f9f4;
+  color: #687066;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-shipping-table tbody tr:hover {
+  background: #fbfcf9;
+}
+
+.admin-shipping-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-shipping-table-primary {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-shipping-table-primary strong {
+  color: #11130f;
+  font-size: 0.8rem;
+}
+
+.admin-shipping-table-primary span,
+.admin-shipping-table td > span {
+  color: #6e786a;
+  font-size: 0.7rem;
+}
+
+.admin-shipping-muted {
+  color: #9aa196 !important;
+}
+
+.admin-shipping-pill {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 27px;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 0.61rem !important;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-shipping-pill--positive {
+  background: #e5f8eb;
+  color: #1f7440 !important;
+}
+
+.admin-shipping-pill--neutral {
+  background: #eceff2;
+  color: #59616a !important;
+}
+
+.admin-shipping-pill--default {
+  background: #f1f7dc;
+  color: #657d17 !important;
+}
+
+.admin-shipping-actions,
+.admin-shipping-record__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.admin-shipping-action-button,
+.admin-shipping-icon-button {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dfe5da;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #11130f;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-shipping-action-button:hover,
+.admin-shipping-icon-button:hover {
+  border-color: #c6ff3d;
+  background: #c6ff3d;
+  transform: translateY(-1px);
+}
+
+.admin-shipping-action-button--danger {
+  color: #a33939;
+}
+
+.admin-shipping-action-button--danger:hover {
+  border-color: #ffe0e0;
+  background: #ffe8e8;
+}
+
+.admin-shipping-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.admin-shipping-state,
+.admin-shipping-empty {
+  display: grid;
+  min-height: 260px;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  border: 1px solid #e4e8df;
+  border-radius: 22px;
+  padding: 32px;
+  background: #ffffff;
+  color: #687066;
+  text-align: center;
+}
+
+.admin-shipping-empty--compact {
+  min-height: 150px;
+  border: 0;
+  box-shadow: none;
+}
+
+.admin-shipping-empty svg {
+  color: #8fa82e;
+  font-size: 2rem;
+}
+
+.admin-shipping-empty h3,
+.admin-shipping-empty p {
+  margin: 0;
+}
+
+.admin-shipping-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: #687066;
+  font-size: 0.76rem;
+  font-weight: 760;
+}
+
+.admin-shipping-back-link:hover {
+  color: #11130f;
+}
+
+.admin-shipping-form-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.25fr)
+    minmax(330px, 0.72fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-shipping-form {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-shipping-form-card,
+.admin-shipping-preview-card,
+.admin-shipping-manager-form,
+.admin-shipping-manager-list {
+  display: grid;
+  gap: 17px;
+  border: 1px solid #e4e8df;
+  border-radius: 22px;
+  padding: 22px;
+  background: #ffffff;
+  box-shadow:
+    0 14px 42px rgba(17, 19, 15, 0.05);
+}
+
+.admin-shipping-preview-card {
+  position: sticky;
+  top: 24px;
+}
+
+.admin-shipping-form-card__heading,
+.admin-shipping-preview-card__heading,
+.admin-shipping-manager-form__heading,
+.admin-shipping-manager-list__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.admin-shipping-form-card__heading span,
+.admin-shipping-preview-card__heading span,
+.admin-shipping-manager-form__heading span,
+.admin-shipping-manager-list__heading span {
+  color: #75806f;
+  font-size: 0.67rem;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-shipping-form-card__heading h2,
+.admin-shipping-preview-card__heading h2,
+.admin-shipping-manager-form__heading h2,
+.admin-shipping-manager-list__heading h2 {
+  margin: 4px 0 0;
+  color: #11130f;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+}
+
+.admin-shipping-preview-card__heading > svg,
+.admin-shipping-manager-form__heading > svg {
+  color: #8fa82e;
+  font-size: 1.25rem;
+}
+
+.admin-shipping-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.admin-shipping-form-grid--three {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+.admin-shipping-form label,
+.admin-shipping-manager-form label {
+  display: grid;
+  gap: 7px;
+  color: #4d554b;
+  font-size: 0.75rem;
+  font-weight: 740;
+}
+
+.admin-shipping-form label small,
+.admin-shipping-manager-form label small {
+  color: #7a8376;
+  font-size: 0.67rem;
+  font-weight: 500;
+}
+
+.admin-shipping-form input,
+.admin-shipping-form select,
+.admin-shipping-form textarea,
+.admin-shipping-manager-form input,
+.admin-shipping-manager-form select,
+.admin-shipping-manager-form textarea {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #dde3d8;
+  border-radius: 13px;
+  padding: 0 13px;
+  background: #f9fbf7;
+  color: #11130f;
+  outline: none;
+  font: inherit;
+}
+
+.admin-shipping-form textarea,
+.admin-shipping-manager-form textarea {
+  min-height: 110px;
+  padding: 12px 13px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.admin-shipping-form input:focus,
+.admin-shipping-form select:focus,
+.admin-shipping-form textarea:focus,
+.admin-shipping-manager-form input:focus,
+.admin-shipping-manager-form select:focus,
+.admin-shipping-manager-form textarea:focus {
+  border-color: #9dbb2f;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(157, 187, 47, 0.12);
+}
+
+.admin-shipping-switch-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-shipping-switch {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 11px;
+  border-radius: 15px;
+  padding: 15px;
+  background: #f7f9f4;
+}
+
+.admin-shipping-switch input {
+  width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+}
+
+.admin-shipping-switch > span {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-shipping-switch strong {
+  color: #11130f;
+  font-size: 0.82rem;
+}
+
+.admin-shipping-switch small {
+  color: #687066;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.admin-shipping-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-shipping-preview-location,
+.admin-shipping-preview-method {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 16px;
+  padding: 16px;
+  background: #f7f9f4;
+}
+
+.admin-shipping-preview-location > span,
+.admin-shipping-preview-method > span {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #eaf2c8;
+  color: #718d1c;
+}
+
+.admin-shipping-preview-location > div,
+.admin-shipping-preview-method > div {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-shipping-preview-location small,
+.admin-shipping-preview-method small,
+.admin-shipping-preview-grid small {
+  color: #778173;
+  font-size: 0.66rem;
+  font-weight: 760;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-shipping-preview-location strong,
+.admin-shipping-preview-method strong,
+.admin-shipping-preview-grid strong {
+  color: #11130f;
+  font-size: 0.86rem;
+}
+
+.admin-shipping-preview-location p,
+.admin-shipping-preview-method p {
+  margin: 0;
+  color: #687066;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.admin-shipping-preview-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-shipping-preview-grid > div {
+  display: grid;
+  gap: 7px;
+  border: 1px solid #e4e8df;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.admin-shipping-preview-grid svg {
+  color: #8fa82e;
+}
+
+.admin-shipping-preview-details {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-shipping-preview-details > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #edf0e9;
+  padding-bottom: 10px;
+}
+
+.admin-shipping-preview-details > div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.admin-shipping-preview-details span {
+  color: #687066;
+  font-size: 0.72rem;
+}
+
+.admin-shipping-preview-details strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #11130f;
+  font-size: 0.75rem;
+}
+
+.admin-shipping-positive {
+  color: #1f7440 !important;
+}
+
+.admin-shipping-negative {
+  color: #8b5c15 !important;
+}
+
+.admin-shipping-manager-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(320px, 0.76fr)
+    minmax(0, 1.24fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-shipping-manager-list__heading > strong {
+  color: #11130f;
+  font-size: 1.35rem;
+}
+
+.admin-shipping-records {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-shipping-record {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid #e7ebe3;
+  border-radius: 15px;
+  padding: 14px;
+}
+
+.admin-shipping-record > div:first-child {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-shipping-record__icon {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #f1f7dc;
+  color: #718d1c;
+}
+
+.admin-shipping-record > div:first-child > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.admin-shipping-record strong {
+  color: #11130f;
+  font-size: 0.82rem;
+}
+
+.admin-shipping-record small {
+  overflow: hidden;
+  color: #6e786a;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .admin-shipping-stats {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-shipping-filters {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-shipping-search {
+    grid-column: span 2;
+  }
+
+  .admin-shipping-form-layout,
+  .admin-shipping-manager-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-shipping-preview-card {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-shipping-page__heading,
+  .admin-shipping-form-page__heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-shipping-stats,
+  .admin-shipping-filters,
+  .admin-shipping-form-grid,
+  .admin-shipping-form-grid--three,
+  .admin-shipping-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-shipping-search,
+  .admin-shipping-filter-actions {
+    grid-column: auto;
+  }
+
+  .admin-shipping-filter-actions {
+    display: grid;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-shipping-record {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-shipping-record__actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-shipping-heading-actions,
+  .admin-shipping-filter-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-shipping-page__heading h1,
+  .admin-shipping-form-page__heading h1 {
+    font-size: 2.15rem;
+  }
+
+  .admin-shipping-form-card,
+  .admin-shipping-preview-card,
+  .admin-shipping-manager-form,
+  .admin-shipping-manager-list {
+    border-radius: 18px;
+    padding: 17px;
+  }
+}
