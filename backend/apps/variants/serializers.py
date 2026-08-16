@@ -1,7 +1,4 @@
-import re
-
 from django.db import transaction
-from django.utils.text import slugify
 from rest_framework import serializers
 
 from apps.products.models import Product
@@ -17,10 +14,6 @@ from .models import (
 class ProductAttributeValueSerializer(
     serializers.ModelSerializer
 ):
-    slug = serializers.SlugField(
-        read_only=True,
-    )
-
     attribute_name = serializers.CharField(
         source="attribute.name",
         read_only=True,
@@ -51,110 +44,34 @@ class ProductAttributeValueSerializer(
 
         read_only_fields = [
             "id",
-            "slug",
             "attribute_name",
             "attribute_slug",
             "created_at",
             "updated_at",
         ]
 
-        # The database constraint uses the generated slug.
-        # Validation is handled below so clients never need
-        # to send that internal field.
-        validators = []
-
-    def validate_value(self, value):
-        normalized_value = value.strip()
-
-        if not normalized_value:
-            raise serializers.ValidationError(
-                "Attribute value is required."
-            )
-
-        if not slugify(normalized_value):
-            raise serializers.ValidationError(
-                "Enter a value containing letters or numbers."
-            )
-
-        return normalized_value
-
-    def validate_display_value(self, value):
-        return value.strip()
-
     def validate_color_code(self, value):
         normalized_value = value.strip()
 
-        if not normalized_value:
-            return ""
-
-        if not normalized_value.startswith("#"):
-            normalized_value = f"#{normalized_value}"
-
-        if not re.fullmatch(
-            r"#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})",
-            normalized_value,
+        if normalized_value and not (
+            normalized_value.startswith("#")
+            and len(normalized_value)
+            in {
+                4,
+                7,
+                9,
+            }
         ):
             raise serializers.ValidationError(
-                "Enter a valid hexadecimal color code, "
-                "for example #000000."
+                "Enter a valid hexadecimal color code."
             )
 
-        return normalized_value.upper()
-
-    def validate(self, attributes):
-        attribute = attributes.get(
-            "attribute",
-            getattr(
-                self.instance,
-                "attribute",
-                None,
-            ),
-        )
-
-        value = attributes.get(
-            "value",
-            getattr(
-                self.instance,
-                "value",
-                "",
-            ),
-        )
-
-        if attribute is None:
-            return attributes
-
-        value_slug = slugify(value)
-
-        queryset = ProductAttributeValue.objects.filter(
-            attribute=attribute,
-            slug=value_slug,
-        )
-
-        if self.instance is not None:
-            queryset = queryset.exclude(
-                pk=self.instance.pk,
-            )
-
-        if queryset.exists():
-            raise serializers.ValidationError(
-                {
-                    "value": (
-                        "This value already exists for "
-                        "the selected attribute."
-                    )
-                }
-            )
-
-        return attributes
+        return normalized_value
 
 
 class ProductAttributeSerializer(
     serializers.ModelSerializer
 ):
-    slug = serializers.SlugField(
-        read_only=True,
-    )
-
     values = ProductAttributeValueSerializer(
         many=True,
         read_only=True,
@@ -176,62 +93,9 @@ class ProductAttributeSerializer(
 
         read_only_fields = [
             "id",
-            "slug",
             "created_at",
             "updated_at",
         ]
-
-        extra_kwargs = {
-            "name": {
-                "validators": [],
-            },
-        }
-
-    def validate_name(self, value):
-        normalized_name = value.strip()
-
-        if not normalized_name:
-            raise serializers.ValidationError(
-                "Attribute name is required."
-            )
-
-        generated_slug = slugify(normalized_name)
-
-        if not generated_slug:
-            raise serializers.ValidationError(
-                "Enter a name containing letters or numbers."
-            )
-
-        queryset = ProductAttribute.objects.filter(
-            name__iexact=normalized_name,
-        )
-
-        if self.instance is not None:
-            queryset = queryset.exclude(
-                pk=self.instance.pk,
-            )
-
-        if queryset.exists():
-            raise serializers.ValidationError(
-                "An attribute with this name already exists."
-            )
-
-        slug_queryset = ProductAttribute.objects.filter(
-            slug=generated_slug,
-        )
-
-        if self.instance is not None:
-            slug_queryset = slug_queryset.exclude(
-                pk=self.instance.pk,
-            )
-
-        if slug_queryset.exists():
-            raise serializers.ValidationError(
-                "An attribute with an equivalent name "
-                "already exists."
-            )
-
-        return normalized_name
 
 
 class ProductVariantOptionSerializer(

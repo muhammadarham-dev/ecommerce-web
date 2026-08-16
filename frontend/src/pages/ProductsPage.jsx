@@ -155,7 +155,7 @@ function ProductsPage() {
     setDraftFilters(
       readFilters(searchParams),
     );
-  }, [queryString, searchParams]);
+  }, [queryString]);
 
   useEffect(() => {
     let isActive = true;
@@ -279,7 +279,7 @@ function ProductsPage() {
       }
     }, [
       currentPage,
-      searchParams,
+      queryString,
     ]);
 
   useEffect(() => {
@@ -298,7 +298,7 @@ function ProductsPage() {
       ?? null,
     [
       categories,
-      searchParams,
+      queryString,
     ],
   );
 

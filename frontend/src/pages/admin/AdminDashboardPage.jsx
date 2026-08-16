@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -112,11 +113,14 @@ function AdminDashboardPage() {
     ? dashboard.orders_by_status
     : [];
 
-  const largestRevenue = Math.max(
-    ...revenueRows.map((item) =>
-      Number(item.revenue || 0),
+  const largestRevenue = useMemo(
+    () => Math.max(
+      ...revenueRows.map((item) =>
+        Number(item.revenue || 0),
+      ),
+      1,
     ),
-    1,
+    [revenueRows],
   );
 
   const totalCatalogItems =

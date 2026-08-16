@@ -30,6 +30,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(),
         source="product",
+        write_only=True,
     )
 
     class Meta:
@@ -48,37 +49,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
         ]
-
-    def validate_image(self, value):
-        max_size = 5 * 1024 * 1024
-
-        if value.size > max_size:
-            raise serializers.ValidationError(
-                "Product images must be 5 MB or smaller."
-            )
-
-        return value
-
-    def validate_alt_text(self, value):
-        return value.strip()
-
-    def validate(self, attributes):
-        product = attributes.get("product")
-
-        if (
-            self.instance is not None
-            and product is not None
-            and product.pk != self.instance.product_id
-        ):
-            raise serializers.ValidationError(
-                {
-                    "product_id": (
-                        "A product image cannot be moved to another product."
-                    )
-                }
-            )
-
-        return attributes
 
 
 class ProductSerializer(serializers.ModelSerializer):

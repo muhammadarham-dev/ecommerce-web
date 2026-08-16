@@ -126,7 +126,6 @@
 
 .admin-orders-table-shell,
 .admin-order-items-table-shell {
-  max-width: 100%;
   overflow-x: auto;
   border: 1px solid #e4e8df;
   border-radius: 22px;
@@ -372,12 +371,10 @@
 .admin-order-detail-main,
 .admin-order-detail-sidebar {
   display: grid;
-  min-width: 0;
   gap: 20px;
 }
 
 .admin-order-card {
-  min-width: 0;
   border: 1px solid #e4e8df;
   border-radius: 22px;
   padding: 22px;
@@ -714,17 +711,6 @@
 .admin-danger-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
-}
-
-@media (max-width: 1460px) {
-  .admin-order-detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-order-detail-sidebar {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 1180px) {

@@ -83,12 +83,11 @@ def create_return_request(
     locked_order_items = {
         order_item.pk: order_item
         for order_item in (
+            # Lock only OrderItem rows. `variant` is nullable, so
+            # joining it in a SELECT ... FOR UPDATE query causes
+            # PostgreSQL to reject the nullable OUTER JOIN side.
             OrderItem.objects
             .select_for_update()
-            .select_related(
-                "product",
-                "variant",
-            )
             .filter(
                 order=locked_order,
                 pk__in=order_item_ids,

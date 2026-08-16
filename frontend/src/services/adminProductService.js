@@ -158,13 +158,17 @@ export async function deleteAdminCategory(
 
 
 export async function uploadAdminProductImage({
-  productSlug,
+  productId,
   image,
   altText = "",
   isPrimary = false,
 }) {
-  const slug = normalizeSlug(productSlug);
   const formData = new FormData();
+
+  formData.append(
+    "product_id",
+    String(productId),
+  );
 
   formData.append(
     "image",
@@ -183,10 +187,12 @@ export async function uploadAdminProductImage({
       : "false",
   );
 
+  /*
+   * Do not set Content-Type here.
+   * Axios/browser will add the multipart boundary.
+   */
   const response = await apiClient.post(
-    `/catalog/products/${
-      encodeURIComponent(slug)
-    }/images/`,
+    "/catalog/product-images/",
     formData,
   );
 
@@ -194,34 +200,33 @@ export async function uploadAdminProductImage({
 }
 
 
-export async function setAdminProductImagePrimary({
-  productSlug,
+export async function setAdminProductImagePrimary(
   imageId,
-}) {
-  const slug = normalizeSlug(productSlug);
+) {
+  const formData = new FormData();
+
+  formData.append(
+    "is_primary",
+    "true",
+  );
 
   const response = await apiClient.patch(
-    `/catalog/products/${
-      encodeURIComponent(slug)
-    }/images/${imageId}/primary/`,
-    {
-      is_primary: true,
-    },
+    `/catalog/product-images/${
+      imageId
+    }/`,
+    formData,
   );
 
   return response.data;
 }
 
 
-export async function deleteAdminProductImage({
-  productSlug,
+export async function deleteAdminProductImage(
   imageId,
-}) {
-  const slug = normalizeSlug(productSlug);
-
+) {
   await apiClient.delete(
-    `/catalog/products/${
-      encodeURIComponent(slug)
-    }/images/${imageId}/`,
+    `/catalog/product-images/${
+      imageId
+    }/`,
   );
 }

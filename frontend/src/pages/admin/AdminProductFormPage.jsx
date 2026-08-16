@@ -123,23 +123,13 @@ function AdminProductFormPage() {
       return;
     }
 
-    if (!imageForm.image.type.startsWith("image/")) {
-      setErrorMessage("Choose a valid image file.");
-      return;
-    }
-
-    if (imageForm.image.size > 5 * 1024 * 1024) {
-      setErrorMessage("Product images must be 5 MB or smaller.");
-      return;
-    }
-
     setIsUploadingImage(true);
     setErrorMessage("");
     setNoticeMessage("");
 
     try {
       await uploadAdminProductImage({
-        productSlug,
+        productId: product.id,
         image: imageForm.image,
         altText: imageForm.altText.trim(),
         isPrimary: imageForm.isPrimary,
@@ -168,10 +158,7 @@ function AdminProductFormPage() {
     setErrorMessage("");
 
     try {
-      await setAdminProductImagePrimary({
-        productSlug,
-        imageId,
-      });
+      await setAdminProductImagePrimary(imageId);
       await refreshProduct();
       setNoticeMessage("Primary product image updated.");
     } catch (error) {
@@ -194,10 +181,7 @@ function AdminProductFormPage() {
     setErrorMessage("");
 
     try {
-      await deleteAdminProductImage({
-        productSlug,
-        imageId,
-      });
+      await deleteAdminProductImage(imageId);
       await refreshProduct();
       setNoticeMessage("Product image deleted successfully.");
     } catch (error) {
@@ -276,10 +260,10 @@ function AdminProductFormPage() {
             <label className="admin-upload-dropzone">
               <FiUploadCloud />
               <strong>Choose product image</strong>
-              <span>JPG, PNG, or WebP · maximum 5 MB</span>
+              <span>JPG, PNG, or WebP</span>
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp"
+                accept="image/*"
                 onChange={(event) => setImageForm((current) => ({
                   ...current,
                   image: event.target.files?.[0] || null,

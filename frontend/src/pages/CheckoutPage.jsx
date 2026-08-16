@@ -127,6 +127,13 @@ function CheckoutPage() {
   );
 
   const [
+    couponCode,
+    setCouponCode,
+  ] = useState(
+    requestedCouponCode,
+  );
+
+  const [
     couponResult,
     setCouponResult,
   ] = useState(null);
@@ -524,8 +531,14 @@ function CheckoutPage() {
             normalizedCode,
           );
 
+        setCouponCode(
+          result.coupon?.code
+          ?? normalizedCode,
+        );
+
         setCouponResult(result);
       } catch (error) {
+        setCouponCode("");
         setCouponResult(null);
 
         setCouponError(
@@ -541,6 +554,7 @@ function CheckoutPage() {
 
   const handleRemoveCoupon =
     () => {
+      setCouponCode("");
       setCouponResult(null);
       setCouponError("");
     };

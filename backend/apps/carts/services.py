@@ -105,13 +105,13 @@ def add_item_to_cart(
 
     cart = (
         Cart.objects
-        .select_for_update(of=("self",))
+        .select_for_update()
         .get(pk=cart.pk)
     )
 
     locked_product = (
         Product.objects
-        .select_for_update(of=("self",))
+        .select_for_update()
         .select_related("category")
         .get(pk=product.pk)
     )
@@ -121,7 +121,7 @@ def add_item_to_cart(
     if variant is not None:
         locked_variant = (
             ProductVariant.objects
-            .select_for_update(of=("self",))
+            .select_for_update()
             .select_related(
                 "product",
                 "product__category",
@@ -131,7 +131,7 @@ def add_item_to_cart(
 
     existing_item = (
         CartItem.objects
-        .select_for_update(of=("self",))
+        .select_for_update()
         .filter(
             cart=cart,
             product=locked_product,
@@ -182,13 +182,19 @@ def update_cart_item_quantity(
     customer,
     quantity,
 ):
-    # Lock only the cart-item row. Joining the nullable ``variant``
-    # relation in a SELECT ... FOR UPDATE query raises PostgreSQL's
-    # "FOR UPDATE cannot be applied to the nullable side of an outer
-    # join" error for simple products that do not have a variant.
+    # Do not join the nullable ``variant`` relation in the same
+    # SELECT ... FOR UPDATE query. PostgreSQL rejects FOR UPDATE
+    # when it is applied to the nullable side of an OUTER JOIN.
+    # The cart item itself is locked here, while a variant (when
+    # present) is locked separately below.
     locked_item = (
         CartItem.objects
-        .select_for_update(of=("self",))
+        .select_for_update()
+        .select_related(
+            "cart",
+            "product",
+            "product__category",
+        )
         .get(
             pk=cart_item.pk,
             cart__user=customer,
@@ -197,7 +203,7 @@ def update_cart_item_quantity(
 
     locked_product = (
         Product.objects
-        .select_for_update(of=("self",))
+        .select_for_update()
         .select_related("category")
         .get(pk=locked_item.product_id)
     )
@@ -207,7 +213,7 @@ def update_cart_item_quantity(
     if locked_item.variant_id:
         locked_variant = (
             ProductVariant.objects
-            .select_for_update(of=("self",))
+            .select_for_update()
             .select_related("product")
             .get(pk=locked_item.variant_id)
         )

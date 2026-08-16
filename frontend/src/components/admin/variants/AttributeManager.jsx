@@ -1,5 +1,4 @@
 import {
-  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -54,7 +53,7 @@ function AttributeManager({ onAttributesChanged }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [noticeMessage, setNoticeMessage] = useState("");
 
-  const loadAttributes = useCallback(async () => {
+  const loadAttributes = async () => {
     setIsLoading(true);
     setErrorMessage("");
 
@@ -69,11 +68,11 @@ function AttributeManager({ onAttributesChanged }) {
     } finally {
       setIsLoading(false);
     }
-  }, [onAttributesChanged]);
+  };
 
   useEffect(() => {
     loadAttributes();
-  }, [loadAttributes]);
+  }, []);
 
   const resetAttributeForm = () => {
     setEditingAttribute(null);

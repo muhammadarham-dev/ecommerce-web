@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db import models, transaction
+from django.db import models
 from django.db.models import F, Q
 from django.utils.text import slugify
 from pathlib import Path
@@ -59,11 +59,11 @@ class Category(models.Model):
     )
 
     image = models.ImageField(
-        upload_to=category_image_upload_path,
-        max_length=255,
-        blank=True,
-        null=True,
-    )
+    upload_to=category_image_upload_path,
+    max_length=255,
+    blank=True,
+    null=True,
+)
 
     is_active = models.BooleanField(
         default=True,
@@ -217,9 +217,9 @@ class ProductImage(models.Model):
     )
 
     image = models.ImageField(
-        upload_to=product_image_upload_path,
-        max_length=255,
-    )
+    upload_to=product_image_upload_path,
+    max_length=255,
+)
 
     alt_text = models.CharField(
         max_length=255,
@@ -249,45 +249,13 @@ class ProductImage(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        if not self.product_id:
-            return super().save(*args, **kwargs)
-
-        with transaction.atomic():
-            other_images = ProductImage.objects.filter(
+        if self.is_primary and self.product_id:
+            ProductImage.objects.filter(
                 product_id=self.product_id,
-            ).exclude(pk=self.pk)
+                is_primary=True,
+            ).exclude(pk=self.pk).update(is_primary=False)
 
-            if not other_images.exists():
-                self.is_primary = True
-
-            if self.is_primary:
-                other_images.filter(
-                    is_primary=True,
-                ).update(is_primary=False)
-
-            return super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        product_id = self.product_id
-        was_primary = self.is_primary
-
-        with transaction.atomic():
-            result = super().delete(*args, **kwargs)
-
-            if was_primary and product_id:
-                replacement = (
-                    ProductImage.objects
-                    .filter(product_id=product_id)
-                    .order_by("id")
-                    .first()
-                )
-
-                if replacement is not None:
-                    ProductImage.objects.filter(
-                        pk=replacement.pk,
-                    ).update(is_primary=True)
-
-            return result
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Image for {self.product.name}"

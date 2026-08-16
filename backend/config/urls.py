@@ -131,8 +131,8 @@ urlpatterns = [
     ),
 
     path(
-        "api/health/",
-        include("apps.system_health.urls"),
+        "api/integrations/engagepilot/",
+        include("apps.engagepilot_integration.urls"),
     ),
 ]
 
@@ -165,6 +165,10 @@ if getattr(
             name="redoc",
         ),
 
+        path(
+    "api/health/",
+    include("apps.system_health.urls"),
+),
     ]
 
 

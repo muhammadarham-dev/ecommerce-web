@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
   </head>
+<script
+  src="http://127.0.0.1:8010/engagepilot-widget.js?v=0.4.1"
+  data-engagepilot
+  data-connection-id="0e526f90-dace-4320-aa05-66b35571bdd7"
+  data-bridge-url="http://127.0.0.1:8001/api/v1/widget"
+  data-identity-bridge-url="http://127.0.0.1:8000/api/integrations/engagepilot/widget/customer-session/"
+  data-auth-token-storage-key="access_token"
+  data-refresh-token-storage-key="refresh_token"
+  data-authenticated-user-storage-key="authenticated_user"
+  data-auth-refresh-url="http://127.0.0.1:8000/api/account-security/token/refresh/"
+  data-exclude-paths="/login,/register,/forgot-password,/reset-password,/verify-email,/admin"
+  data-position="bottom-right"
+  data-debug="true"
+  data-demo="false"
+></script>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>

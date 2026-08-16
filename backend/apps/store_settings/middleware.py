@@ -15,6 +15,7 @@ class StoreMaintenanceMiddleware:
         "/static/",
         "/media/",
         "/api/health/",
+        "/api/integrations/engagepilot/",
     )
 
     def __init__(self, get_response):

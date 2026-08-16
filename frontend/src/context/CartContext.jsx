@@ -107,6 +107,63 @@ export function CartProvider({
     refreshCart,
   ]);
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return undefined;
+    }
+
+    let refreshInProgress = false;
+    let refreshQueued = false;
+
+    const synchronizeCart = async () => {
+      if (refreshInProgress) {
+        refreshQueued = true;
+        return;
+      }
+
+      refreshInProgress = true;
+
+      try {
+        await refreshCart();
+      } catch {
+        // Keep the current UI state if the background sync fails.
+        // A later cart event or normal page navigation can retry it.
+      } finally {
+        refreshInProgress = false;
+
+        if (refreshQueued) {
+          refreshQueued = false;
+          void synchronizeCart();
+        }
+      }
+    };
+
+    const handleEngagePilotCartChanged = (event) => {
+      const resource = event?.detail?.resource;
+
+      if (resource && resource !== "cart") {
+        return;
+      }
+
+      void synchronizeCart();
+    };
+
+    window.addEventListener(
+      "engagepilot:cart-changed",
+      handleEngagePilotCartChanged,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "engagepilot:cart-changed",
+        handleEngagePilotCartChanged,
+      );
+    };
+  }, [
+    isAuthenticated,
+    refreshCart,
+  ]);
+
   const addItem =
     useCallback(
       async ({

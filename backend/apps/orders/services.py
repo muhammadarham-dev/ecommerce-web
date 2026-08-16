@@ -193,28 +193,14 @@ def create_order_from_cart(
             }
         ) from error
 
-    # Lock cart-item rows without joining the nullable ``variant``
-    # relation. PostgreSQL rejects ``SELECT ... FOR UPDATE`` when the
-    # query tries to lock the nullable side of an outer join, which is
-    # exactly what happens for simple products whose variant is NULL.
-    locked_cart_item_ids = list(
-        CartItem.objects
-        .select_for_update(of=("self",))
-        .filter(cart=cart)
-        .order_by("id")
-        .values_list("id", flat=True)
-    )
-
     cart_items = list(
         CartItem.objects
+        .select_for_update()
         .select_related(
             "product",
             "product__category",
-            "variant",
-            "variant__product",
-            "variant__product__category",
         )
-        .filter(pk__in=locked_cart_item_ids)
+        .filter(cart=cart)
         .order_by("id")
     )
 

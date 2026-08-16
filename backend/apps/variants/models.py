@@ -52,8 +52,8 @@ class ProductAttribute(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        self.name = self.name.strip()
-        self.slug = slugify(self.name)
+        if not self.slug:
+            self.slug = slugify(self.name)
 
         super().save(*args, **kwargs)
 
@@ -136,13 +136,12 @@ class ProductAttributeValue(models.Model):
 
     def save(self, *args, **kwargs):
         self.value = self.value.strip()
-        self.slug = slugify(self.value)
-        self.display_value = (
-            self.display_value.strip()
-            if self.display_value
-            else self.value
-        )
-        self.color_code = self.color_code.strip()
+
+        if not self.slug:
+            self.slug = slugify(self.value)
+
+        if not self.display_value:
+            self.display_value = self.value
 
         super().save(*args, **kwargs)
 

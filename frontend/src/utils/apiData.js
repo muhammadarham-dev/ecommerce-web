@@ -22,65 +22,32 @@ export function extractList(responseData) {
   return [];
 }
 
-
-function findFirstErrorMessage(value) {
-  if (typeof value === "string" && value.trim()) {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const message = findFirstErrorMessage(item);
-
-      if (message) {
-        return message;
-      }
-    }
-
-    return "";
-  }
-
-  if (value && typeof value === "object") {
-    for (const item of Object.values(value)) {
-      const message = findFirstErrorMessage(item);
-
-      if (message) {
-        return message;
-      }
-    }
-  }
-
-  return "";
-}
-
-
 export function getApiErrorMessage(
   error,
   fallbackMessage = "The request could not be completed.",
 ) {
   const responseData = error.response?.data;
-  const detailedMessage = findFirstErrorMessage(
-    responseData?.error?.details,
-  );
-
-  if (detailedMessage) {
-    return detailedMessage;
-  }
-
-  if (typeof responseData?.detail === "string") {
-    return responseData.detail;
-  }
 
   if (responseData?.error?.message) {
     return responseData.error.message;
   }
 
-  if (responseData && !responseData.error) {
-    const directMessage = findFirstErrorMessage(responseData);
+  if (responseData?.error?.details) {
+    const details = responseData.error.details;
 
-    if (directMessage) {
-      return directMessage;
+    if (typeof details === "string") {
+      return details;
     }
+
+    const firstValue = Object.values(details)[0];
+
+    if (Array.isArray(firstValue) && firstValue.length > 0) {
+      return String(firstValue[0]);
+    }
+  }
+
+  if (responseData?.detail) {
+    return responseData.detail;
   }
 
   if (!error.response) {

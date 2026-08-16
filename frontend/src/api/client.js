@@ -4,7 +4,6 @@ import {
   clearAuthentication,
   getAccessToken,
   getRefreshToken,
-  isAccessTokenExpired,
   updateAccessToken,
   updateRefreshToken,
   updateStoredUser,
@@ -41,19 +40,6 @@ function removeContentTypeHeader(
 
   delete headers["Content-Type"];
   delete headers["content-type"];
-}
-
-
-function getSharedRefreshRequest() {
-  if (!refreshRequest) {
-    refreshRequest =
-      refreshAccessToken()
-        .finally(() => {
-          refreshRequest = null;
-        });
-  }
-
-  return refreshRequest;
 }
 
 
@@ -107,23 +93,9 @@ async function refreshAccessToken() {
 
 
 apiClient.interceptors.request.use(
-  async (config) => {
-    let accessToken =
+  (config) => {
+    const accessToken =
       getAccessToken();
-
-    if (
-      accessToken
-      && isAccessTokenExpired(accessToken)
-      && getRefreshToken()
-    ) {
-      try {
-        accessToken =
-          await getSharedRefreshRequest();
-      } catch {
-        clearAuthentication();
-        accessToken = null;
-      }
-    }
 
     config.headers =
       config.headers ?? {};
@@ -182,8 +154,16 @@ apiClient.interceptors.response.use(
     originalRequest._retry = true;
 
     try {
+      if (!refreshRequest) {
+        refreshRequest =
+          refreshAccessToken()
+            .finally(() => {
+              refreshRequest = null;
+            });
+      }
+
       const newAccessToken =
-        await getSharedRefreshRequest();
+        await refreshRequest;
 
       originalRequest.headers =
         originalRequest.headers

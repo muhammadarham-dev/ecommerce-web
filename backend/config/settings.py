@@ -19,14 +19,6 @@ from decimal import Decimal
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-def config_list(name, default=""):
-    return [
-        item.strip()
-        for item in config(name, default=default).split(",")
-        if item.strip()
-    ]
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -36,10 +28,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config_list(
-    "ALLOWED_HOSTS",
-    default="localhost,127.0.0.1",
-)
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -85,8 +74,9 @@ INSTALLED_APPS = [
     "apps.audit_logs.apps.AuditLogsConfig",
     "apps.api_security.apps.ApiSecurityConfig",
     "apps.system_health.apps.SystemHealthConfig",
-    
+    "apps.engagepilot_integration.apps.EngagePilotIntegrationConfig",
 ]
+
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -164,7 +154,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = config("TIME_ZONE", default="Asia/Karachi")
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -174,8 +164,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "/static/"
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+STATIC_URL = "static/"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -235,6 +224,7 @@ REST_FRAMEWORK = {
 
         "checkout": "10/minute",
         "shipping_quote": "30/minute",
+        "engagepilot_integration": "120/minute",
     },
 }
 
@@ -286,6 +276,35 @@ DEFAULT_FROM_EMAIL = "noreply@ecommerce.local"
 FRONTEND_URL = config(
     "FRONTEND_URL",
     default="http://localhost:5173",
+).strip().rstrip("/")
+
+# EngagePilot connector integration
+ENGAGEPILOT_API_TOKEN = config(
+    "ENGAGEPILOT_API_TOKEN",
+    default="",
+).strip()
+ENGAGEPILOT_STORE_IDENTIFIER = config(
+    "ENGAGEPILOT_STORE_IDENTIFIER",
+    default="django-commerce-store",
+).strip()
+ENGAGEPILOT_STORE_NAME = config(
+    "ENGAGEPILOT_STORE_NAME",
+    default="Django Commerce Store",
+).strip()
+ENGAGEPILOT_CONNECTION_ID = config(
+    "ENGAGEPILOT_CONNECTION_ID",
+    default="",
+).strip()
+ENGAGEPILOT_AGENT_SERVICE_URL = config(
+    "ENGAGEPILOT_AGENT_SERVICE_URL",
+    default="http://127.0.0.1:8001",
+).strip().rstrip("/")
+ENGAGEPILOT_CHECKOUT_URL = (
+    config(
+        "ENGAGEPILOT_CHECKOUT_URL",
+        default="",
+    ).strip()
+    or f"{FRONTEND_URL}/checkout"
 )
 
 # One hour
@@ -352,24 +371,14 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-ENABLE_API_DOCS = config(
-    "ENABLE_API_DOCS",
-    default=DEBUG,
-    cast=bool,
-)
+ENABLE_API_DOCS = DEBUG
 
-CORS_ALLOWED_ORIGINS = config_list(
-    "CORS_ALLOWED_ORIGINS",
-    default=(
-        f"{FRONTEND_URL},"
-        "http://127.0.0.1:5173"
-    ),
-)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
-CSRF_TRUSTED_ORIGINS = config_list(
-    "CSRF_TRUSTED_ORIGINS",
-    default=(
-        f"{FRONTEND_URL},"
-        "http://127.0.0.1:5173"
-    ),
-)
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]

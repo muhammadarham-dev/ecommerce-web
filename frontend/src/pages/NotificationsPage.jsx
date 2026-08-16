@@ -11,6 +11,7 @@ import {
   FiCreditCard,
   FiExternalLink,
   FiMessageCircle,
+  FiPackage,
   FiRotateCcw,
   FiSearch,
   FiShoppingBag,

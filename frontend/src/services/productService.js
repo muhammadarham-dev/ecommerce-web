@@ -1,4 +1,4 @@
-import publicApiClient from "../api/publicClient";
+import apiClient from "../api/client";
 import {
   extractList,
 } from "../utils/apiData";
@@ -7,7 +7,7 @@ import {
 export async function fetchProductCatalog(
   params = {},
 ) {
-  const response = await publicApiClient.get(
+  const response = await apiClient.get(
     "/catalog/products/",
     {
       params,
@@ -48,7 +48,7 @@ export async function fetchProducts(
 export async function fetchCategories(
   params = {},
 ) {
-  const response = await publicApiClient.get(
+  const response = await apiClient.get(
     "/catalog/categories/",
     {
       params,
@@ -72,7 +72,7 @@ export async function fetchCategoryBySlug(
     );
   }
 
-  const response = await publicApiClient.get(
+  const response = await apiClient.get(
     `/catalog/categories/${
       encodeURIComponent(
         normalizedSlug,
@@ -97,7 +97,7 @@ export async function fetchProductBySlug(
     );
   }
 
-  const response = await publicApiClient.get(
+  const response = await apiClient.get(
     `/catalog/products/${
       encodeURIComponent(
         normalizedSlug,
@@ -120,7 +120,7 @@ export async function fetchProductVariants(
     return [];
   }
 
-  const response = await publicApiClient.get(
+  const response = await apiClient.get(
     `/variants/products/${
       encodeURIComponent(
         normalizedSlug,
